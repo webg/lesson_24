@@ -7,6 +7,7 @@ get '/' do
 end
 
 get '/about' do
+	@error = 'something'
 	erb :about
 end
 
@@ -20,11 +21,24 @@ post '/visit' do
 	@date=params[:datetime]
 	@barber=params[:barber]
     @color=params[:color]
-
+    
+    hh={:username=>"Введите имя", 
+    	:phone=>"#{@name} введитете номер телефона", 
+    	:datetime=>"#{@name} введите время",
+    	:barber=>"#{@name} выберите парикмахера"}
+    hh.each do |key, value|
+    	if params[key]==""
+    		@error=hh[key]
+    		return erb :visit
+    	end
+    end
+	
 	f= File.open "./public/user.txt", "a"
 	f.write "User: #{@name}, Phone: #{@phone}, Date: #{@date}, Barber: #{@barber}, Color: #{@color} \n"
 	f.close
-	erb :visit
+	
+	erb "#{@name}, Вы записаны к парикмахеру #{@barber} на #{@date}. В ближайщее время на Ваш номер #{@phone} позвонит наш менджер"
+
 end
 
 get '/contacts' do
