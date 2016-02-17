@@ -26,11 +26,15 @@ post '/visit' do
     	:phone=>"#{@name} введитете номер телефона", 
     	:datetime=>"#{@name} введите время",
     	:barber=>"#{@name} выберите парикмахера"}
-    hh.each do |key, value|
-    	if params[key]==""
-    		@error=hh[key]
-    		return erb :visit
-    	end
+    #hh.each do |key, value|
+    #	if params[key]==""
+    #		@error=hh[key]
+    #		return erb :visit
+    #	end
+    #   end
+    @error = hh.select {|key,_| params[key]==""}.values.join(", ")
+    if @error!= ''
+    	return erb :visit
     end
 	
 	f= File.open "./public/user.txt", "a"
