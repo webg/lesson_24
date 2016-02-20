@@ -4,17 +4,17 @@ require 'sinatra/reloader'
 require 'sqlite3'
 
 configure do
-	@db = SQLite3::Database.new 'barbershop.db'
-	@db.execute 'CREATE TABLE IF NOT EXISTS 
-		"Users" 
-		(
-		"id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-		"name" TEXT, 
-		"phone" TEXT, 
-		"datestamp" TEXT, 
-		"barber" TEXT, 
-		"color" TEXT
-		)'
+    db = get_db
+    	db.execute 'CREATE TABLE IF NOT EXISTS
+        	"Users"
+        	(
+            	"id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            	"name" TEXT,
+            	"phone" TEXT,
+            	"datestamp" TEXT,
+            	"barber" TEXT,
+            	"color" TEXT
+        	)'
 end
 get '/' do
 	erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for <a href=\"http://rubyschool.us/\">Ruby School</a>"			
@@ -52,9 +52,17 @@ post '/visit' do
     	return erb :visit
     end
 	
-	f= File.open "./public/user.txt", "a"
-	f.write "User: #{@name}, Phone: #{@phone}, Date: #{@date}, Barber: #{@barber}, Color: #{@color} \n"
-	f.close
+	db = get_db
+    db.execute 'insert into
+        Users
+        (
+            name,
+            phone,
+            datestamp,
+            barber,
+            color
+        )
+        values (?, ?, ?, ?, ?)', [@name, @phone, @date, @barber, @color]
 	
     erb "#{@name}, Вы записаны к парикмахеру #{@barber} на #{@date}. В ближайщее время на Ваш номер #{@phone} позвонит наш менджер"
 end
@@ -72,4 +80,10 @@ post '/contacts' do
 	f.write "\n Email: #{@email}\n ========================== \n Text: #{@text}\n ================= \n "
 	f.close
 	erb :contacts
+end
+
+def get_db
+    db = SQLite3::Database.new 'barbershop.db'
+    db.results_as_hash = true
+    return db
 end
