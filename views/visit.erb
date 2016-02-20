@@ -22,9 +22,9 @@
   <label>Select your barber:</label>
   <select class="form-control" name="barber" value="<%= @barber %>">
   <option></option>
-  <option>Bob Parsons</option>
-  <option>Jessie Pinkman</option>
-  <option>Gus Fring</option>
+  <option <%= @barber=='Bob Parsons'? 'selected': ''%>>Bob Parsons</option>
+  <option <%= @barber=='Jessie Pinkman'? 'selected': ''%>>Jessie Pinkman</option>
+  <option <%= @barber=='Gus Fring'? 'selected': ''%>>Gus Fring</option>
 </select>
   </div>
 
