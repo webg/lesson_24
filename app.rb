@@ -1,3 +1,5 @@
+
+
 require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
@@ -81,11 +83,32 @@ post '/contacts' do
 	@email=params[:email]
 	@text=params[:text]
 	
+    mm={:email=>"Введите электроный адрес", 
+        :text=>"Введите текст сообщения"}
+    #hh.each do |key, value|
+    #   if params[key]==""
+    #       @error=hh[key]
+    #       return erb :visit
+    #   end
+    #   end
+    @error = mm.select {|key,_| params[key]==""}.values.join(", ")
+    if @error!= ''
+        return erb :contacts
+    end
 
-	f= File.open "./public/contacts.txt", "a"
-	f.write "\n Email: #{@email}\n ========================== \n Text: #{@text}\n ================= \n "
-	f.close
-	erb :contacts
+	# f= File.open "./public/contacts.txt", "a"
+	# f.write "\n Email: #{@email}\n ========================== \n Text: #{@text}\n ================= \n "
+	# f.close
+	# erb :contacts
+    db = get_db
+    db.execute 'insert into
+        Contacts
+        (
+            email,
+            message
+        )
+        values (?, ?)', [@email, @text]
+    erb "Ваш запрос принят"
 end
 
 get '/showusers' do
@@ -96,3 +119,10 @@ get '/showusers' do
 	erb :showusers
 end
 
+get '/showcontacts' do
+    db = get_db
+    
+        @message = db.execute 'select * from Contacts'
+        
+    erb :showcontacts
+end

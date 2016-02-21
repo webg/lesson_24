@@ -1,0 +1,20 @@
+<table class="table table-striped">
+	<thead> 
+		<tr> 
+			<th>#</th> 
+			<th>Email</th> 
+			<th>Текст сообщения</th> 
+		</tr> 
+	</thead>
+	<% @message.each do |row| %>
+		<tr>
+			<td><%= row['id'] %></td>
+			<td><%= row['Email'] %></td>
+			<td><%= row['Message'] %></td>
+			
+		</tr>
+	
+
+	<% end %>
+ 
+</table>
